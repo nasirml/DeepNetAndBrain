@@ -1,0 +1,74 @@
+--------------------
+This code is the demonstration of our following paper:
+"Correspondence of Deep Neural Networks and the Brain for Visual Textures"
+Md Nasir Uddin Laskar, Luis G Sanchez Giraldo, and Odelia Schwartz
+ArXiv Preprint. Link: https://arxiv.org/abs/1806.02888
+
+--------------------
+Let's divide the whole project into three steps:
+    step 1: Deep net output
+    step 2: Qualitative comparison with the brain data
+    step 3: Quantitative comparison with the brain data
+
+Briefly, following is what each step does. To learn in more detail, please read the paper.
+
+--------------------
+step 1:
+    - Send the input images to the deep net, here we mostly use AlexNet, and find
+      the outputs from each layer. We have included step 1 outputs for both 225 and extended
+      3375 images as mat files so you do not need this step right away. You can use our
+      data and run Steps 2 and 3 and see the results described in the paper.
+    - You need to have configured/installed the Caffe to run this section of code.
+      if you do not have Caffe in your machine, you can safely ignore this part of
+      the code as we have supplied the output of this section of the code in the
+      data/ directory.
+    - We have tested our method in many variants of deep network. For example, changing
+      the strides in the layers, using random weights instead of pre-trained filters, etc.
+    - But we provide data only for one specific case, you can manipulate the deep net
+      as we describe int he paper (also as your own idea), send the texture images
+      through the network, find the outputs and use our code to find the correspondence
+      with the brain recording data.
+    - Use your data --> send them in a deep network --> get the network outputs
+      of different layers --> and go to step 2.
+
+step 2:
+    - Qualitative correspondence of deep neural networks with the brain recording
+      data as described in the paper.
+    - You don NOT need to configure/install Caffe or TensorFlow to run this section.
+      Because we have already supplied the deep net output data in the data/ directory.
+    - Create instances of all the measures of qualitative correspondence so that
+      we can invoke any metric just by using a member operator, instead of creating
+      object each time.
+    - k is to read specific line from file, k=2 means second line of the input
+      which is the third line in the param.txt file. first line is the heading.
+
+step 3:
+    - Shows the quantitative correspondence of the deep network with the brain
+      recording data, as described in the paper.
+    - You don NOT need to configure/install Caffe or TensorFlow to run this section.
+      Because we have already supplied the deep net output data in the data/ directory.
+    - Read the necessary parameters from file and initialize them.
+    - k is to read specific line from file, k=2 means second line of the input
+      which is the third line in file. first line is the heading.
+    - We use the maps from extended set of texture images for quantification,
+      especially for the cross validation. Please go through the paper to know
+      the reason for this. In short, a decent amount of data is necessary to do
+      cross validation.
+    - Note, the use of random case for cross-validation (layerNum>10 and is_crossval=1 in
+      params.txt) take long time as we do the cross-validation in the extended dataset
+      and we do 225 fold cross-validation 10 times and take the average of their results.
+    - Layer L3 and L4 takes even more time as their data size is larger than L1 and L2
+
+--------------------
+NOTE:
+1. This is the first version of the project. I will fix issues/bugs and update in the
+   future versions.
+2. Please see the uml_class_diagram.pdf to get a sense of class hierarchies
+   of the project. There are a lot other methods and dependencies too, but still,
+   it will give you an overall picture.
+3. Please use the code as is. At your own risk. You can download, edit, update or do whatever
+   you want. You do not have to ask for any permission to do anything with it!
+4. If you find any serious bug in the program, plese do not hesitate to let me know.
+   You can reach me at: nasir@cs.miami.edu
+
+--------------------

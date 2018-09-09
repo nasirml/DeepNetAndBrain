@@ -1,0 +1,21 @@
+Please see about.txt to know what each step does/means in the project.
+
+Folders:
+samples/	: Original texture samples. used to generated textures and noise images. also used to plot them as markers in step 3.
+
+
+Files:
+about.txt	: A simple overview of the paper and the project. You should take a look at this file as it describes what comes with this repo and what you need.
+data.txt	: This file
+texture_natural_alexnet.mat : Step 1 output from 225 texture image dataset. Use in step 2.
+texture_noise_alexnet.mat	: Step 1 output from 225 noise image dataset. Used int step 2.
+texture_natural_extended_alexnet : Step 1 output from extended 3375 texture images data. Used in step 3.
+texture_noise_extended_alexnet   : Step 1 output from extended 3375 noise images data. Used in step 3.
+uml_class_diagram.pdf : A simple class hierarchies of the project. This is no way the complete description of the whole project. There are a lot other methods and dependencies. This picture is intended to give you an overall idea of whats going on within classes.
+
+
+NOTE:
+1. As we have mentioned many times. mat files are trimmed/cropped to center to save disk space. e.g. from 225x48x54x54 --> 225x48x8x8
+2. Step 1 output for random wights case is not included as they are huge in size.
+3. Step 1 input caffemodel is also not included which you can find in the Caffe model zoo.
+4. I will host these files in an ftp server and update this file with the link to download them. 

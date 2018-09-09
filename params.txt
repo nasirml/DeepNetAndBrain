@@ -1,0 +1,6 @@
+# v1_or_v2, layerNum, centerRespSize, is_crossval, is_train, n_folds, nNeurons, nClasses--- v1_orV2 means whether we are fitting to the V1 data or V2; layerNum is the number of deep net layer output of which we are fitting, usually 1 to 5 for AlexNet, 11 means L1 randomized, 20 means only L2 randomized, 21 means both L1 and L2 randomized etc; centerRespSize is the window size in center of the deep net map we are considering to fit with; is_crossval means whether we the fitting is after cross validation or not; is_train means the fitting are on the same data as training; nNeurons consists of the number of neurons we are picking from the center neighbourhood(usually 103); nClasses is the number of classes or cagetories of textures.
+2,1,2,0,0,225,103,15
+2,2,2,0,0,225,103,15
+2,1,2,1,0,225,103,15
+2,20,2,0,0,225,103,15
+2,21,2,0,0,225,103,15

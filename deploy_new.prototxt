@@ -1,0 +1,237 @@
+# conv1 = conv1_new, conv2 = conv2_new, for randomization weights
+name: "CaffeNet"
+layer {
+  name: "data"
+  type: "Input"
+  top: "data"
+  input_param { shape: { dim: 10 dim: 3 dim: 227 dim: 227 } }
+}
+layer {
+  name: "conv1"         # conv1 to conv1_new
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 2           # changed the stride to 2
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+#layer {                 # square after the relu. element wise multiplication
+#  name: "eltwise1"
+#  type: "Eltwise"
+#  bottom: "conv1"
+#  bottom: "conv1"
+#  top: "conv1-squared"
+#  eltwise_param {
+#    operation: PROD
+#  }
+#}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"       # usual 'conv1' if Eltwise layer not used
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "pool1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2"         # conv2 to conv2_new. randomize L2 weights
+  type: "Convolution"
+  bottom: "norm1"
+  top: "conv2"
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    weight_filler{
+        type: "xavier"
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+#layer {                 # square after the relu2. element wise multiplication
+#  name: "eltwise2"
+#  type: "Eltwise"
+#  bottom: "conv2"
+#  bottom: "conv2"
+#  top: "conv2-squared" 
+#  eltwise_param {
+#    operation: PROD
+#  }
+#}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"       # usual 'conv2' if Eltwise layer not used
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "pool2"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "norm2"
+  top: "conv3"
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "fc6_new"            # FC layers complain as conv1 layer's stride changed to 2. So change FC layers names as we do not need them at this time
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc6_new"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6_new"
+  top: "fc6_new"
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "fc6_new"
+  top: "fc6_new"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7_new"
+  type: "InnerProduct"
+  bottom: "fc6_new"
+  top: "fc7_new"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7_new"
+  top: "fc7_new"
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7_new"
+  top: "fc7_new"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc8_new"
+  type: "InnerProduct"
+  bottom: "fc7_new"
+  top: "fc8_new"
+  inner_product_param {
+    num_output: 1000
+  }
+}
+layer {
+  name: "prob"
+  type: "Softmax"
+  bottom: "fc8_new"
+  top: "prob"
+}
