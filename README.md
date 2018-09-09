@@ -21,5 +21,3 @@ Step 3: Shows the quantitative correspondence of the deep network with the brain
 ### How to run
 Just run the main function. It will invoke the step 2 of the paper and you will see a plot in the paper. You can run any part of step 3 also, as in the main.py file. To run step 1, you need to have Caffe installed in your machine.
 
-
-
