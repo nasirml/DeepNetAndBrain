@@ -19,8 +19,8 @@ Step 3: Shows the quantitative correspondence of the deep network with the brain
 
 
 ### How to run
-Just run the main function. It will invoke the step 2 of the paper and you will see a plot in the paper. You can run any part of step 3 also, as in the main.py file. To run step 1, you need to have Caffe installed in your machine.
+Just run the main function. It will invoke the step 2 and you will see a plot in the paper. You can run any part of step 3 also, as in the main.py file. To run step 1, you need to have the input images and Caffe installed in your machine.
 
 
 ### Note
-Please see the about.txt and data.txt for more details on the program and data.
+Please see the about.txt and data.txt for more details on the program and necessary data and uml_class_diagram.pdf to get a sense about the class hierarchies.
