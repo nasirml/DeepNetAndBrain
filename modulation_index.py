@@ -66,22 +66,9 @@ class ModIndex(InitParams):
         else:
             M, M_all = modulation_index_common.scatnet_mod_index()
 
-        nanIdx_all = np.argwhere(np.isnan(M))   # 511x2, (row, col) of nan values
-        nanIdx = np.unique(nanIdx_all[:, 1])    # unique col numbers i.e. neurons
-        M_new = np.delete(M, [nanIdx], 1)       # 15x432
-        if is_random == True:
-            if M_new.shape[0] == 225:
-                mod_idx_tmp = np.reshape(M_new, [nClasses, nImgEachClass, -1])  # 15x15x512
-                M_new = np.squeeze(np.nanmean(mod_idx_tmp, 1)) # 15x512
-        neurons_total = M_new.shape[1]
-        avgForEachClassLTotal = np.zeros((self.n_iteration, nClasses))
+        avgForEachClassL = self.cnn_mod_index_refine(M, nClasses=nClasses, nImgEachClass=nImgEachClass,
+                                        nNeurons=nNeurons, is_random=is_random)
 
-        for iT in range(self.n_iteration):
-            randomNeurons = random.sample(range(0, neurons_total), nNeurons)   # 103x1
-            avgForEachClassTmp = np.mean(M_new[:, randomNeurons], 1)
-            avgForEachClassLTotal[iT, :] = avgForEachClassTmp
-        avgForEachClassL = np.mean(avgForEachClassLTotal, 0)        # 15x1
-        avgForEachClassL = np.around(avgForEachClassL, decimals=2)  # all to 2 decimal places
         print('\nAvg Mod index, L%d: %0.2f ' %(layerNum, np.mean(avgForEachClassL)))
         print(repr(avgForEachClassL))       # convert to string and print with commas
 
@@ -91,4 +78,31 @@ class ModIndex(InitParams):
             print('Order (L2, from large to small mod index): ')
             # Freeman reproduce order is: [12, 11, 0, 9, 13, 1, 4, 5, 8, 6, 2, 10, 14, 7, 3] compare
             print(order)
+
+    def cnn_mod_index_refine(self, M, nClasses=15, nImgEachClass=15, nIteration=10000, nNeurons=103, is_random=False):
+        '''
+        - address the NaN values, do the averageing over the samples and
+          families, handle decimal places
+        '''
+        nanIdx_all = np.argwhere(np.isnan(M))   # 511x2, will give the (row, col) of nan values
+        nanIdx = np.unique(nanIdx_all[:, 1])    # unique col numbers i.e. neurons
+        M_new = np.delete(M, [nanIdx], 1) # 15x432, refine M, deleting cols(neurons) having nan values. idices and from cols=1
+
+        # 225x512 --> 15x512
+        if is_random == True:
+            if M_new.shape[0] == 225:
+                mod_idx_tmp = np.reshape(M_new, [nClasses, nImgEachClass, -1])  # 15x15x512
+                M_new = np.squeeze(np.nanmean(mod_idx_tmp, 1)) # 15x512
+
+        neurons_total = M_new.shape[1]
+        avgForEachClassLTotal = np.zeros((nIteration, nClasses))
+        for iT in range(nIteration):
+            randomNeurons = random.sample(range(0, neurons_total), nNeurons)   # 103x1
+            avgForEachClassTmp = np.mean(M_new[:, randomNeurons], 1)
+            avgForEachClassLTotal[iT, :] = avgForEachClassTmp
+
+        avgForEachClassL = np.mean(avgForEachClassLTotal, 0)        # 15x1
+        avgForEachClassL = np.around(avgForEachClassL, decimals=4)  # convert to 2 decimal places. all values in the list
+        return avgForEachClassL
+
 
