@@ -19,7 +19,7 @@ Step 3: Shows the quantitative correspondence of the deep network with the brain
 
 
 ### How to run
-Just run the main function. It will invoke the step 2 and you will see a plot in the paper. You can run any part of step 3 also, as in the main.py file. To run step 1, you need to have the input images and Caffe installed in your machine.
+Just run the main function. It will invoke the step 2 and you will see a plot in the paper. You can run any part of step 3 also, as the necessary data is provided. To run step 1, you need to have the input images and Caffe installed in your machine. You can also use your own texture dataset of images to find similarity with the brain. For now, we mostly consider texture images as V2 neurons are sensitive to texture type inputs.
 
 
 ### Note

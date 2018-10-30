@@ -59,16 +59,24 @@ def deep_net_mod_index(layerNum, fName, isVGG=False, centerRespSize=2, nClasses=
         M = np.nanmean(M_all, 0)
     else:
         nImgEachClass = int(lNaturalCenter.shape[0] / nClasses)     # find the num of image each class on the fly
-        epsiLon = 1e-8                      # to save divide by zero error
-        diffVal = lNaturalCenter - lNoiseCenter
-        sumVal = lNaturalCenter + lNoiseCenter
-        if np.sum(sumVal) == 0.0 or np.sum(sumVal) == 0:
-            sumVal = sumVal + epsiLon
-        modIndexTmp = diffVal / sumVal      # 225x512, has NaN entries
-        M_all = np.copy(modIndexTmp)        # 225x512 is needed for the k-fold cross-validation
-        modIndexTmp = np.reshape(modIndexTmp, [nClasses, nImgEachClass, nFilters*centerRespSize*centerRespSize])
-        M = np.squeeze(np.nanmean(modIndexTmp, 1)) # 15x512, families and samples
+        M, M_all = mod_index_compute(lNaturalCenter, lNoiseCenter, nClasses, nImgEachClass, nFilters, centerRespSize)
     return M, M_all
+    
+def mod_index_compute(lNaturalCenter, lNoiseCenter, nClasses, nImgEachClass, nFilters, centerRespSize):
+    '''
+    - function to actually compute the modulation index
+    '''
+    epsiLon = 1e-8                 # to save divide by zero error
+    diffVal = lNaturalCenter - lNoiseCenter
+    sumVal = lNaturalCenter + lNoiseCenter
+    if np.sum(sumVal) == 0.0 or np.sum(sumVal) == 0:
+        sumVal = sumVal + epsiLon
+    modIndexTmp = diffVal / sumVal      # 225x512, has NaN entries
+    M_all = np.copy(modIndexTmp)        # 225x512 is needed for the k-fold cross-validation
+    modIndexTmp = np.reshape(modIndexTmp, [nClasses, nImgEachClass, nFilters*centerRespSize*centerRespSize])
+    M = np.squeeze(np.nanmean(modIndexTmp, 1)) # 15x512, class x neurons, second 15 are samples and first 15 are families.
+
+    return M, M_all    
 
 def get_layer_data(allVarsDictNatural, allVarsDictNoise, layerNum, centerRespSize):
     l_natural = 'l%dOutNatural' %layerNum
